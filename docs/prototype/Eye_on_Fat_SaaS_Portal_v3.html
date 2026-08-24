@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eye on Fat — Cost Transformation Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F6F1; --ink:#16211E; --tape:#FFC526; --fat:#E4572E; --lean:#1E8A5A;
+  --steel:#5A6B66; --line:#DDE3DA; --card:#FFFFFF; --amber:#D9930D; --bone:#7A6A55;
+  --beige:#EDE8DA; --beige2:#E3DCC9; --beigeline:#D6CDB8; --proc:#2F5D8A;
+  --mono:'IBM Plex Mono',monospace; --body:'IBM Plex Sans',sans-serif; --disp:'Barlow Condensed',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;overflow:hidden;height:100vh;display:flex}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--fat);outline-offset:2px}
+input,select,textarea{font-family:var(--body);font-size:13px;border:1px solid var(--line);border-radius:5px;padding:7px 9px;background:#fff;color:var(--ink);width:100%}
+label.fl{display:block;font-size:12px;font-weight:600;margin:10px 0 3px}
+label.fl .req{color:var(--fat)}
+label.fl .opt{color:var(--steel);font-weight:400;font-family:var(--mono);font-size:10.5px}
+h1{font-family:var(--disp);font-weight:700;font-size:30px;letter-spacing:.01em;text-transform:uppercase}
+h2{font-family:var(--disp);font-weight:600;font-size:20px;text-transform:uppercase;letter-spacing:.02em}
+h3{font-family:var(--disp);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.02em}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-bottom:4px}
+.sub{color:var(--steel);max-width:860px;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px}
+.hint{font-family:var(--mono);font-size:10.5px;color:var(--steel)}
+.btn{border:1.5px solid var(--ink);background:#fff;border-radius:6px;padding:8px 14px;font-weight:600;font-size:13px}
+.btn:hover{background:var(--beige)}
+.btn.pri{background:var(--ink);color:var(--tape)}
+.btn.pri:hover{background:#233430}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn.proc{border-color:var(--proc);color:var(--proc)}
+.btn.proc:hover{background:#EAF1F8}
+.btn.proc.pri{background:var(--proc);color:#fff;border-color:var(--proc)}
+.chip{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--line);background:#fff}
+.chip.ok{background:#E6F3EC;border-color:#BFE0CE;color:var(--lean)}
+.chip.amb{background:#FBF1DC;border-color:#EDD9A8;color:var(--amber)}
+.chip.red{background:#FBE7E0;border-color:#F0C4B5;color:var(--fat)}
+.chip.proc{background:#EAF1F8;border-color:#C4D6E8;color:var(--proc)}
+.tb{width:100%;border-collapse:collapse;font-size:13px}
+.tb th{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);text-align:left;padding:8px 10px;border-bottom:1.5px solid var(--ink)}
+.tb td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tb tr:hover td{background:#FAFBF8}
+.gatebar{display:flex;gap:12px;align-items:flex-start;background:#FFF8E2;border:1px solid #EDDDA0;border-radius:8px;padding:12px 14px;margin-top:16px}
+.gatebar b{font-family:var(--disp);text-transform:uppercase;font-size:15px;letter-spacing:.02em}
+.gatebar p{font-size:12.5px;color:#5c5230;margin-top:2px}
+.diamond{width:14px;height:14px;background:var(--tape);border:1.5px solid var(--ink);transform:rotate(45deg);flex:0 0 auto;margin-top:3px}
+
+/* ---------- login ---------- */
+#login{position:fixed;inset:0;background:linear-gradient(160deg,var(--beige) 0%,var(--paper) 60%);z-index:200;display:flex;align-items:center;justify-content:center}
+.lg-card{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:34px 36px;width:380px;box-shadow:0 14px 40px rgba(22,33,30,.12)}
+.logo{font-family:var(--disp);font-weight:700;font-size:34px;letter-spacing:.02em;text-transform:uppercase;line-height:.95}
+.logo .fat{color:var(--fat)}
+.tagline{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--steel);margin-top:5px;border-top:3px solid var(--tape);display:inline-block;padding-top:5px}
+.lg-card p.note{font-size:12px;color:var(--steel);margin-top:10px}
+.lg-card .btn{width:100%;margin-top:16px;padding:11px}
+.lg-links{display:flex;justify-content:space-between;margin-top:12px;font-size:12px}
+.lg-links a{color:var(--steel)}
+
+/* ---------- shell ---------- */
+.shell{display:flex;width:100%;height:100vh}
+aside{width:228px;flex:0 0 228px;background:var(--beige);border-right:1px solid var(--beigeline);display:flex;flex-direction:column}
+.side-logo{padding:18px 16px 14px;border-bottom:1px solid var(--beigeline)}
+.side-logo .logo{font-size:24px}
+.side-logo .tagline{font-size:9px;letter-spacing:.16em}
+.tenant{font-family:var(--mono);font-size:10px;color:var(--steel);margin-top:8px}
+.snav{padding:10px 8px;overflow-y:auto;flex:1}
+.snav .grp{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#8b8265;padding:10px 10px 4px}
+.snav button{display:flex;width:100%;text-align:left;gap:9px;align-items:center;background:none;border:none;border-radius:6px;padding:8px 10px;font-size:13px;font-weight:500;color:var(--ink)}
+.snav button:hover{background:var(--beige2)}
+.snav button.on{background:var(--ink);color:var(--tape)}
+.snav .stg{font-family:var(--mono);font-size:9px;color:var(--steel);width:22px;flex:0 0 22px}
+.snav button.on .stg{color:var(--tape)}
+.side-foot{padding:12px 16px;border-top:1px solid var(--beigeline);font-family:var(--mono);font-size:9.5px;color:var(--steel)}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:52px;flex:0 0 52px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 18px}
+#crumb{font-family:var(--disp);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.03em}
+.topbar .sp{flex:1}
+.cursel{display:flex;align-items:center;gap:6px}
+.cursel label{font-family:var(--mono);font-size:10px;color:var(--steel);text-transform:uppercase;letter-spacing:.1em}
+.cursel select{width:auto;padding:5px 8px;font-family:var(--mono);font-size:12px}
+.user{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--tape);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700}
+.content{flex:1;overflow-y:auto;padding:22px 26px 60px}
+.pg{display:none;max-width:1180px}
+.pg.on{display:block}
+
+/* ---------- dashboard ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.kpi .v{font-family:var(--disp);font-weight:700;font-size:26px}
+.kpi .l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.kpi.hot{border-color:var(--fat)}
+.barwrap{display:flex;gap:6px;align-items:flex-end;margin-top:8px}
+.mcol{display:flex;flex-direction:column-reverse;justify-content:flex-start;border-radius:3px 3px 0 0;overflow:hidden}
+.mseg{width:100%}
+.mlab{font-family:var(--mono);font-size:9.5px;color:var(--steel);text-align:center;margin-top:4px}
+.mtot{font-family:var(--mono);font-size:9.5px;font-weight:600;text-align:center;margin-bottom:3px}
+.legend{display:flex;gap:16px;margin-top:10px;font-family:var(--mono);font-size:10.5px;color:var(--steel);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- connectors ---------- */
+.conn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px;margin-top:14px}
+.conn{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;cursor:pointer}
+.conn:hover{border-color:var(--ink)}
+.conn .nm{font-weight:600;font-size:13.5px}
+.conn .st{margin-top:6px}
+.conn .det{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;font-size:12px;color:var(--steel)}
+.conn.open .det{display:block}
+.dropzone{border:2px dashed var(--steel);border-radius:10px;padding:26px;text-align:center;color:var(--steel);margin-top:14px;cursor:pointer;background:#fff}
+.dropzone:hover{border-color:var(--fat);color:var(--fat)}
+.meter{height:12px;background:var(--beige2);border-radius:6px;overflow:hidden;margin-top:8px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--fat),var(--amber),var(--lean))}
+
+/* ---------- spend tree ---------- */
+.tmap{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tnode{border:1.5px solid var(--ink);border-radius:8px;padding:10px;background:var(--card);cursor:pointer;position:relative;min-width:130px}
+.tnode:hover{background:#FDFDF9;box-shadow:0 4px 12px rgba(22,33,30,.08)}
+.tnode .nm{font-family:var(--disp);font-weight:600;font-size:15px;text-transform:uppercase;letter-spacing:.02em}
+.tnode .amt{font-family:var(--mono);font-size:11px;color:var(--steel)}
+.vp{height:8px;border-radius:4px;overflow:hidden;display:flex;margin-top:8px}
+.vp i{display:block;height:100%}
+.tflag{position:absolute;top:8px;right:8px}
+.drillcard{margin-top:14px}
+
+/* ---------- should cost ---------- */
+.sc-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:980px){.sc-wrap{grid-template-columns:1fr}}
+.stackrow{display:grid;grid-template-columns:1.4fr 90px 70px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.stackrow input{padding:5px 7px;font-family:var(--mono);font-size:12px;text-align:right}
+.stackrow .pct{font-family:var(--mono);font-size:11px;color:var(--steel);text-align:right}
+.sc-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:10px;font-family:var(--disp);font-weight:700;font-size:20px;text-transform:uppercase}
+.agstat{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+.agstat .nm{font-family:var(--mono);font-size:11px;font-weight:600;width:64px;flex:0 0 64px}
+.agstat p{font-size:12px;color:var(--steel);flex:1}
+
+/* ---------- ffg ---------- */
+.ffg-item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-top:12px}
+.ffg-h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ffg-h .nm{font-weight:600;font-size:14px}
+.ffg-h .amt{font-family:var(--mono);font-size:11px;color:var(--steel);margin-left:auto}
+.cls{font-family:var(--disp);font-weight:700;font-size:14px;padding:2px 10px;border-radius:4px;letter-spacing:.05em}
+.t-fat{background:#E6F3EC;color:var(--lean);border:1px solid #BFE0CE}
+.t-mus{background:#FBF1DC;color:var(--amber);border:1px solid #EDD9A8}
+.t-bone{background:#FBE7E0;color:var(--fat);border:1px solid #F0C4B5}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:12px}
+.test{cursor:pointer}
+.test .tl{font-size:11.5px;font-weight:600}
+.tbarr{height:7px;background:var(--beige2);border-radius:4px;overflow:hidden;margin-top:4px}
+.tbarr i{display:block;height:100%}
+.test .ts2{font-family:var(--mono);font-size:9.5px;margin-top:3px}
+.test .ev{display:none;font-size:11.5px;color:var(--steel);margin-top:5px;border-left:2px solid var(--line);padding-left:7px}
+.test.open .ev{display:block}
+.ffg-verdict{background:#F7F8F4;border-left:3px solid var(--ink);padding:9px 11px;font-size:12.5px;margin-top:12px}
+.decide{display:flex;gap:8px;align-items:center;margin-top:11px;flex-wrap:wrap}
+.db{border:1.5px solid var(--ink);background:#fff;border-radius:5px;padding:6px 12px;font-weight:600;font-size:12px}
+.db.go:hover,.db.go.picked{background:var(--lean);border-color:var(--lean);color:#fff}
+.db.hold:hover,.db.hold.picked{background:var(--amber);border-color:var(--amber);color:#fff}
+.db.stop:hover,.db.stop.picked{background:var(--fat);border-color:var(--fat);color:#fff}
+.signers{font-family:var(--mono);font-size:10px;color:var(--steel);margin-left:auto}
+.signed{font-family:var(--mono);font-size:10.5px;color:var(--lean);font-weight:600}
+
+/* ---------- levers ---------- */
+.lv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:14px}
+.lv{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px;cursor:pointer}
+.lv:hover{border-color:var(--ink)}
+.lv .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.lv h3{margin-top:3px}
+.lv.mult h3{color:var(--fat)}
+.lv.add h3{color:var(--lean)}
+.lv p{font-size:12.5px;color:var(--steel);margin-top:5px}
+.lv .stats{font-family:var(--mono);font-size:11px;margin-top:8px}
+.lv .lpj{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.lv.open .lpj{display:block}
+.lpj a{display:block;font-size:12px;padding:4px 0;color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--line)}
+.lpj a:hover{color:var(--fat)}
+.handoff{background:#EAF1F8;border:1px solid #C4D6E8;border-radius:8px;padding:14px;margin-top:16px}
+.handoff h3{color:var(--proc)}
+.handoff p{font-size:12.5px;color:#3e526b;margin-top:5px}
+.pc-agents{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pc-ag{background:#fff;border:1px solid #C4D6E8;border-radius:6px;padding:6px 10px;font-family:var(--mono);font-size:10.5px;color:var(--proc)}
+
+/* ---------- projects ---------- */
+.pj-tools{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.seg2{display:flex;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.seg2 button{border:none;background:#fff;padding:6px 12px;font-weight:600;font-size:12.5px}
+.seg2 button.on{background:var(--ink);color:var(--tape)}
+select.flt{width:auto;font-size:12px;padding:6px 8px}
+.pj-sum{display:flex;gap:16px;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--steel);flex-wrap:wrap}
+.stgpill{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:9px}
+.stg-P{background:#EEF0EC;color:var(--steel)}
+.stg-F{background:#FBF1DC;color:var(--amber)}
+.stg-C{background:#E6F3EC;color:var(--lean)}
+.pdetail{margin-top:14px}
+.acc{background:var(--card);border:1px solid var(--line);border-radius:8px;margin-top:8px;overflow:hidden}
+.acc>button{width:100%;border:none;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;font-family:var(--disp);font-weight:600;font-size:15px;text-transform:uppercase;letter-spacing:.02em}
+.acc>button:hover{background:#FAFBF8}
+.acc .bd{display:none;padding:0 14px 14px;border-top:1px solid var(--line)}
+.acc.open .bd{display:block}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:800px){.f2{grid-template-columns:1fr}}
+.mini{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.mini th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--steel);text-align:left;padding:6px 8px;border-bottom:1px solid var(--ink)}
+.mini td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.addrem{font-weight:700;border:none;background:none;font-size:15px}
+.addrem.add{color:var(--lean)}
+.addrem.rem{color:var(--fat)}
+.finlock{background:#FFF8E2;border:1px solid #EDDDA0;border-radius:6px;padding:9px 11px;font-size:12px;margin-top:10px}
+
+/* ---------- procura in project ---------- */
+.procura-box{background:#F5F9FD;border:1.5px solid var(--proc);border-radius:8px;padding:14px;margin-top:10px}
+.procura-box h3{color:var(--proc)}
+.procura-box p{font-size:12.5px;color:#3e526b;margin-top:4px}
+.psteps{display:flex;gap:0;margin-top:12px;overflow-x:auto}
+.pstep{flex:1;min-width:96px;text-align:center;position:relative;padding-top:4px;cursor:pointer}
+.pstep .dot{width:22px;height:22px;border-radius:50%;border:2px solid #C4D6E8;background:#fff;margin:0 auto;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;color:var(--proc)}
+.pstep.done .dot{background:var(--proc);border-color:var(--proc);color:#fff}
+.pstep.now .dot{border-color:var(--proc);box-shadow:0 0 0 3px #C4D6E8}
+.pstep::before{content:"";position:absolute;top:15px;left:-50%;width:100%;height:2px;background:#C4D6E8;z-index:-1}
+.pstep:first-child::before{display:none}
+.pstep .pl{font-size:10px;margin-top:5px;color:#3e526b}
+.pstep.now .pl{font-weight:700;color:var(--proc)}
+.pstage-det{background:#fff;border:1px solid #C4D6E8;border-radius:6px;padding:11px 13px;margin-top:12px;font-size:12.5px}
+.pstage-det .ag{font-family:var(--mono);font-size:10px;color:var(--proc);text-transform:uppercase;letter-spacing:.08em}
+.plog{font-family:var(--mono);font-size:10.5px;color:var(--steel);margin-top:10px;max-height:110px;overflow-y:auto;border-top:1px dashed #C4D6E8;padding-top:8px}
+.plog div{padding:2px 0}
+.eligib{background:#EAF1F8;border:1px dashed var(--proc);border-radius:6px;padding:10px 12px;font-size:12.5px;color:#3e526b;margin-top:10px}
+
+/* ---------- reports ---------- */
+.pie{width:150px;height:150px;border-radius:50%;flex:0 0 150px}
+.pierow{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.pkeys{font-size:12px}
+.pkeys div{padding:2px 0}
+.pkeys i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* ---------- agents ---------- */
+.ag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:14px}
+.ag{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px;cursor:pointer;position:relative}
+.ag:hover{border-color:var(--ink)}
+.ag.orchc{border:1.5px solid var(--ink);background:#FFFDF4}
+.ag .role{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.ag .nm{font-family:var(--disp);font-weight:700;font-size:19px;text-transform:uppercase;margin-top:2px}
+.ag p{font-size:12px;color:var(--steel);margin-top:5px}
+.ag .fam{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:8px}
+.fam.eof{background:var(--beige);color:var(--bone)}
+.fam.pc{background:#EAF1F8;color:var(--proc)}
+.ag .io{display:none;margin-top:9px;border-top:1px dashed var(--line);padding-top:7px;font-size:11.5px;color:var(--steel)}
+.ag.open .io{display:block}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="login">
+  <div class="lg-card">
+    <div class="logo">EYE <span class="fat">ON FAT</span></div>
+    <div class="tagline">Sustained Systemic Savings</div>
+    <label class="fl" style="margin-top:20px">Work email</label>
+    <input type="email" value="k.menon@meridiangroup.com">
+    <label class="fl">Password</label>
+    <input type="password" value="••••••••••">
+    <p class="note">First login? Enter your Meridian Group ID and a new password — you'll receive an activation link by email (check spam/clutter).</p>
+    <button class="btn pri" id="loginBtn">Sign in</button>
+    <div class="lg-links"><a href="#">Forgot password</a><a href="#">meridiangroup.eyeonfat.com</a></div>
+  </div>
+</div>
+
+<!-- ================= SHELL ================= -->
+<div class="shell">
+  <aside>
+    <div class="side-logo">
+      <div class="logo">EYE <span class="fat">ON FAT</span></div>
+      <div class="tagline">Sustained Systemic Savings</div>
+      <div class="tenant">Tenant · Meridian Group</div>
+    </div>
+    <nav class="snav">
+      <button class="on" data-p="dash"><span class="stg">◉</span>Dashboard</button>
+      <div class="grp">Value stream</div>
+      <button data-p="data"><span class="stg">00</span>Connectors &amp; Data</button>
+      <button data-p="cube"><span class="stg">01</span>Spend Tree</button>
+      <button data-p="sc"><span class="stg">02</span>Should-Cost / ZBC</button>
+      <button data-p="ffg"><span class="stg">03</span>Fuel for Growth</button>
+      <button data-p="lev"><span class="stg">04</span>7 Levers &amp; Sourcing</button>
+      <div class="grp">Deliver</div>
+      <button data-p="pj"><span class="stg">05</span>Projects</button>
+      <button data-p="addpj"><span class="stg">＋</span>Add Project</button>
+      <button data-p="rep"><span class="stg">▤</span>Reports</button>
+      <div class="grp">System</div>
+      <button data-p="agents"><span class="stg">✦</span>Agent Crew</button>
+    </nav>
+    <div class="side-foot">Grounding · Refusal · Human-in-the-loop<br>FY 2026–27 · v3.0</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <span id="crumb">Dashboard</span>
+      <span class="sp"></span>
+      <div class="cursel"><label>Currency</label>
+        <select id="curSel">
+          <option value="USD">$ USD (base)</option><option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option><option value="AED">AED</option>
+          <option value="SAR">SAR</option><option value="INR">₹ INR</option>
+        </select>
+      </div>
+      <div class="user"><span>K. Menon · Category Lead</span><div class="avatar">K</div></div>
+    </div>
+
+    <div class="content">
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="pg on" id="dash">
+      <div class="eyebrow">Programme overview · FY 2026–27</div>
+      <h1>Cost transformation dashboard</h1>
+      <p class="sub">Systematic, sustainable squeezing of costs — cut the fat, never the bone or muscle. Every figure converts live with the currency selector.</p>
+      <div class="kpis" id="dashKpis"></div>
+      <div class="card" style="margin-top:14px">
+        <h2>Monthly savings — Pipeline · Forecast · Committed</h2>
+        <div class="hint">Totals shown above each month in millions. Stage totals and FY grand total in the legend.</div>
+        <div class="barwrap" id="dashBar"></div>
+        <div class="legend" id="dashLeg"></div>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <div class="card">
+          <h2>Needs attention</h2>
+          <table class="tb"><tbody id="attn"></tbody></table>
+        </div>
+        <div class="card">
+          <h2>Procura-linked projects</h2>
+          <p class="hint" style="margin-bottom:6px">Projects converted to procurement events — the Procura Crew runs the sourcing; you keep the award decision.</p>
+          <table class="tb"><tbody id="dashProc"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONNECTORS ================= -->
+    <section class="pg" id="data">
+      <div class="eyebrow">Stage 00 · Intake &amp; weigh-in — agent SCALE</div>
+      <h1>Connectors &amp; data</h1>
+      <p class="sub">Connect the SME stack; SCALE ingests, deduplicates, classifies to a common taxonomy and reconciles to the trial balance. Gate G0: the CFO signs off scope &amp; completeness. Click a connector for sync &amp; mapping detail.</p>
+      <div class="conn-grid" id="connGrid"></div>
+      <div class="dropzone" id="dz" tabindex="0">⬆ Drop or click to upload — XLSX · CSV · PDF · JSON · XML · ZIP · scanned invoices (OCR)</div>
+      <div class="card" style="margin-top:14px">
+        <h2>Intake queue</h2>
+        <table class="tb"><thead><tr><th>File / feed</th><th>Rows</th><th>Status</th><th>Mapped to taxonomy</th></tr></thead><tbody id="intakeQ"></tbody></table>
+        <h3 style="margin-top:14px">Cost losing its anonymity — completeness</h3>
+        <div class="meter"><i id="meterFill" style="width:87%"></i></div>
+        <div class="hint" style="margin-top:5px">87% of P&amp;L spend classified to supplier × category × invoice line · target ≥ 95% before G0 sign-off</div>
+      </div>
+      <div class="gatebar"><span class="diamond"></span><div><b>Gate G0 — Scope &amp; completeness</b><p>The owner/CFO confirms the spend base is complete and correctly classified before any analysis begins. No analysis on data nobody trusts.</p></div></div>
+    </section>
+
+    <!-- ================= SPEND TREE ================= -->
+    <section class="pg" id="cube">
+      <div class="eyebrow">Stage 01 · Agents CUBE + LENS</div>
+      <h1>Spend tree — Volume × Price</h1>
+      <p class="sub">The entire spend of the company as a cube, every block split Volume × Price. Block size ∝ annual spend. Click a block to drill into suppliers; click a supplier for invoice-line lineage. LENS flags anomalies and ranks opportunity.</p>
+      <div class="tmap" id="tmap"></div>
+      <div class="legend" style="margin-top:10px"><span><i style="background:var(--steel)"></i>Volume share</span><span><i style="background:var(--fat)"></i>Price share</span><span>⚑ = LENS opportunity flag</span></div>
+      <div class="drillcard card" id="drill"></div>
+      <div class="gatebar"><span class="diamond"></span><div><b>Gate G1 — Opportunity shortlist</b><p>Leadership approves the LENS-ranked shortlist (spend × volatility × savings potential) that proceeds to Should-Cost.</p></div></div>
+    </section>
+
+    <!-- ================= SHOULD COST ================= -->
+    <section class="pg" id="sc">
+      <div class="eyebrow">Stage 02 · Agents SCOPE → PULSE → FORGE → SENTINEL</div>
+      <h1>Should-cost / zero-based costing</h1>
+      <p class="sub">The zero-based question first — should this spend exist at all? Then the clean-sheet: SCOPE structures the cost, PULSE prices the market, FORGE builds the formula-driven stack, SENTINEL benchmarks and holds the fair-margin floor. Your edits are never overwritten.</p>
+      <div class="sc-wrap">
+        <div class="card">
+          <h2>Clean-sheet — HDPE shopping bag, 27μ reinforced top-fold</h2>
+          <div class="hint">Per 1,000 bags · edit any line — the stack and gap recompute; agent values stay visible as provenance.</div>
+          <div id="scStack" style="margin-top:10px"></div>
+          <div class="sc-total"><span>Should-cost total</span><span id="scTot"></span></div>
+          <div class="sc-total" style="font-size:15px;color:var(--steel)"><span>Current supplier price</span><span id="scCur"></span></div>
+          <div class="sc-total" style="color:var(--fat)"><span>Gap — the fat</span><span id="scGap"></span></div>
+        </div>
+        <div>
+          <div class="card">
+            <h2>Agent status</h2>
+            <div id="scAgents"></div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <h2>SENTINEL — benchmark checks</h2>
+            <table class="tb"><thead><tr><th>Check</th><th>Model</th><th>Benchmark</th><th>Status</th></tr></thead><tbody id="sentT"></tbody></table>
+            <div class="hint" style="margin-top:7px">Fair-margin floor enforced — sub-floor "savings" are flagged as supply risk, not wins.</div>
+          </div>
+        </div>
+      </div>
+      <div class="gatebar"><span class="diamond"></span><div><b>Gate G2 — Analyst acceptance</b><p>The analyst signs the clean-sheet before it becomes a negotiation fact-base or RFQ target. Agents assemble in the open; humans accept.</p></div></div>
+    </section>
+
+    <!-- ================= FUEL FOR GROWTH ================= -->
+    <section class="pg" id="ffg">
+      <div class="eyebrow">Stage 03 · Agent FUEL FOR GROWTH · Gate G3</div>
+      <h1>Fuel for growth</h1>
+      <p class="sub">Before any idea enters the savings pipeline, the FUEL FOR GROWTH agent stress-tests it with evidence: is this genuinely <b>fat</b> (waste), or is it <b>muscle</b> (growth-enabling capability) or <b>bone</b> (structural necessity) wearing a savings disguise? The agent only testifies — the Project Manager and the accountable business Manager make the call, every decision dual-signed into the audit log.</p>
+      <div class="card" style="margin-top:14px">
+        <h2 style="margin-top:0">The five tests</h2>
+        <table class="tb"><thead><tr><th>Test</th><th>Question the FUEL FOR GROWTH agent answers with evidence</th></tr></thead><tbody>
+          <tr><td><b>Customer experience</b></td><td>Will the customer notice, and will it change purchase or repeat behaviour?</td></tr>
+          <tr><td><b>Quality &amp; spec integrity</b></td><td>Does the product still meet its functional spec (e.g. bag carry-capacity, failure rate) after the change?</td></tr>
+          <tr><td><b>Growth capacity</b></td><td>Does this remove capacity, capability or investment the growth plan depends on?</td></tr>
+          <tr><td><b>Supply continuity</b></td><td>Does the saving push a supplier below the fair-margin floor or concentrate risk?</td></tr>
+          <tr><td><b>Brand, safety &amp; compliance</b></td><td>Any regulatory, safety or brand-promise exposure?</td></tr>
+        </tbody></table>
+      </div>
+      <div id="ffgList"></div>
+      <div class="gatebar"><span class="diamond"></span><div><b>Gate G3 — Fuel-for-Growth decision</b><p>Proceed / Hold / Reject requires two signatures: the Project Manager and the accountable business Manager. A HOLD returns the idea to redesign; a REJECT archives it with the reasoning. No idea reaches the 7-Lever pipeline without a green decision here.</p></div></div>
+    </section>
+
+    <!-- ================= LEVERS ================= -->
+    <section class="pg" id="lev">
+      <div class="eyebrow">Stage 04 · The opportunity engine — agent LEVER</div>
+      <h1>Seven levers, one pipeline</h1>
+      <p class="sub">LEVER tags every Fuel-for-Growth-cleared idea to a primary lever and sizes it with calculators. Click a lever to expand its linked projects — clicking a project jumps straight into Manage Projects. Price, Specifications and Right-Source ideas can convert into full Procura procurement events from within the project.</p>
+      <div class="lv-grid" id="lvGrid"></div>
+      <div class="handoff">
+        <h3>⇢ Procurement hand-off · Procura Crew</h3>
+        <p>When a project takes the <b>Price</b> or <b>Specifications</b> lever, needs a <b>new supplier</b>, or is tagged <b>Right Source</b>, it can be converted into a Procurement project from inside the project itself. COACH opens a Procura sourcing event with the should-cost target pre-loaded into the RFQ, and the Crew runs research → RFP → bids → evaluation → recommendation. You keep the award decision at every gate.</p>
+        <div class="pc-agents"><span class="pc-ag">RESEARCHER</span><span class="pc-ag">RFP ARCHITECT</span><span class="pc-ag">BID HANDLER</span><span class="pc-ag">RECOMMENDER</span></div>
+      </div>
+      <div class="gatebar"><span class="diamond"></span><div><b>Gate G4 — Ideas sized &amp; committed</b><p>Category teams select, size and commit ideas into the pipeline. An idea without an owner and a date does not enter.</p></div></div>
+    </section>
+
+    <!-- ================= MANAGE PROJECTS ================= -->
+    <section class="pg" id="pj">
+      <div class="eyebrow">Stage 05 · Deliver — the Eye on Fat tool</div>
+      <h1>Manage projects</h1>
+      <p class="sub">One place to create, manage and track every cost-savings project — by BU, Country, Function and P&amp;L element. Ideas welcome: commit to finance later. Only Finance can commit to Forecast. Duplicate any project to <b>steal with pride</b>. Projects marked <span class="chip proc">PROCURA</span> run a live procurement event inside the project.</p>
+      <div class="pj-tools">
+        <div class="seg2"><button class="on" id="myBtn">My Projects</button><button id="allBtn">All Projects</button></div>
+        <select class="flt" id="fBU"><option value="">BU: All</option></select>
+        <select class="flt" id="fCty"><option value="">Country: All</option></select>
+        <select class="flt" id="fPnl"><option value="">P&amp;L element: All</option></select>
+        <select class="flt" id="fStage"><option value="">Stage: All</option><option>Pipeline</option><option>Forecast</option><option>Committed</option></select>
+        <select class="flt" id="fLever"><option value="">Lever: All</option></select>
+        <button class="btn sm">Custom query</button>
+        <button class="btn sm">⬇ Excel download</button>
+        <button class="btn pri sm" style="margin-left:auto" data-go="addpj">＋ Add project</button>
+      </div>
+      <div class="pj-sum" id="pjSum"></div>
+      <div class="card" style="margin-top:12px;overflow-x:auto">
+        <table class="tb"><thead><tr>
+          <th>Project</th><th>BU</th><th>Country</th><th>P&amp;L element</th><th>Lever</th><th>Lead</th><th>Stage</th><th style="text-align:right">Annual (000s)</th><th style="text-align:right">T&amp;P adj.</th><th></th>
+        </tr></thead><tbody id="pjBody"></tbody></table>
+        <div class="hint" style="margin-top:8px">T&amp;P adj. = annual savings × time factor (savings-start within FY) × probability. ⧉ duplicates the project — steal with pride: change BU, country, amounts &amp; timing. Also duplicates from previous year.</div>
+      </div>
+      <div class="pdetail" id="pdetail"></div>
+      <div class="gatebar"><span class="diamond"></span><div><b>Gates G5 &amp; G6 — Finance governance &amp; SteerCo</b><p>Only the named Finance Lead can commit a project to Forecast; SteerCo signs delivered savings into actuals and next cycle's zero-based budgets.</p></div></div>
+    </section>
+
+    <!-- ================= ADD PROJECT ================= -->
+    <section class="pg" id="addpj">
+      <div class="eyebrow">Add new project — four sections, per the Eye on Fat tool</div>
+      <h1>Add project</h1>
+      <p class="sub">Mandatory fields marked <span style="color:var(--fat)">*</span>. Save as an IDEA — no need to prove feasibility yet; Finance commits to Forecast later. If the project takes the Price or Specifications lever, or needs a new supplier, it qualifies to convert into a Procurement project and launch the Procura Crew from the project detail.</p>
+
+      <div class="acc open">
+        <button data-acc>1 · Project details <span>▾</span></button>
+        <div class="bd"><div class="f2">
+          <div><label class="fl">Project name <span class="req">*</span></label><input id="apName" placeholder="e.g. Corrugate box weight optimisation">
+            <label class="fl">BU (Business Unit) <span class="req">*</span></label><select id="apBU"><option>Retail</option><option>Hospitality</option><option>Corporate</option><option>Manufacturing</option><option>E-commerce</option></select>
+            <label class="fl">Country <span class="req">*</span></label><select id="apCty"><option>UAE</option><option>KSA</option><option>India</option><option>USA</option><option>UK</option></select>
+            <label class="fl">Function</label><select><option>Procurement</option><option>Supply chain</option><option>Marketing</option><option>IT</option><option>Finance</option><option>Operations</option></select></div>
+          <div><label class="fl">P&amp;L element <span class="req">*</span></label><select id="apPnl"><option>Packaging</option><option>Raw materials</option><option>Logistics &amp; freight</option><option>Rent &amp; utilities</option><option>Marketing</option><option>IT &amp; telecom</option><option>Travel &amp; admin</option><option>Manpower services</option></select>
+            <label class="fl">Primary lever <span class="req">*</span></label><select id="apLever"><option>Price</option><option>Specifications</option><option>Demand</option><option>Eliminate</option><option>Automate (Digitise)</option><option>Consolidate</option><option>Right Source</option></select>
+            <label class="fl">Requires a new supplier?</label><select id="apNewSup"><option>No</option><option>Yes</option></select>
+            <label class="fl">Project lead <span class="req">*</span></label><input value="K. Menon">
+            <label class="fl">Team <span class="opt">optional</span></label><input placeholder="Comma-separated names"></div>
+        </div>
+        <div class="eligib" id="apElig" style="display:none">⇢ <b>Procura-eligible.</b> This lever / supplier need qualifies the project to convert into a Procurement project. After saving, open the project detail and press <b>Convert to Procurement project</b> — the Procura Crew (Researcher, RFP Architect, Bid Handler, Recommender) will start with your should-cost target pre-loaded.</div>
+        <label class="fl">Description</label><textarea rows="2" placeholder="What is the idea, and why now?"></textarea></div>
+      </div>
+
+      <div class="acc">
+        <button data-acc>2 · Savings — time &amp; probability adjusted <span>▾</span></button>
+        <div class="bd"><div class="f2">
+          <div><label class="fl">Total annual savings (000s, base $) <span class="req">*</span></label><input id="apAmt" type="number" value="120">
+            <label class="fl">Probability % <span class="req">*</span></label><input id="apProb" type="number" value="75" min="0" max="100">
+            <label class="fl">Savings start date <span class="req">*</span></label><input id="apStart" type="date" value="2026-10-01"></div>
+          <div><label class="fl">Savings end date <span class="opt">blank = recurring</span></label><input type="date">
+            <label class="fl">Current-FY savings (auto)</label><input id="apFY" readonly>
+            <label class="fl">Carry-forward to next FY (auto)</label><input id="apCF" readonly></div>
+        </div>
+        <div class="hint" style="margin-top:8px">Time adjustment: months remaining in FY (Apr–Mar) from savings start ÷ 12 × annual × probability.</div>
+        <label class="fl">BU / Country break-up <span class="opt">optional — for multi-BU projects</span></label><input placeholder="Retail-UAE 60% · Retail-KSA 40%"></div>
+      </div>
+
+      <div class="acc">
+        <button data-acc>3 · Cost to achieve <span>▾</span></button>
+        <div class="bd"><div class="f2">
+          <div><label class="fl">One-time cost (000s)</label><input type="number" value="0"></div>
+          <div><label class="fl">Recurring cost (000s / yr)</label><input type="number" value="0"></div>
+        </div><label class="fl">Cost notes</label><input placeholder="Tooling, consulting, licence, severance…"></div>
+      </div>
+
+      <div class="acc">
+        <button data-acc>4 · Milestones &amp; meetings <span>▾</span></button>
+        <div class="bd">
+          <table class="mini"><thead><tr><th>Milestone</th><th>Owner</th><th>Due</th><th>%</th><th></th></tr></thead><tbody id="apMiles">
+            <tr><td><input value="Baseline validated"></td><td><input value="K. Menon"></td><td><input type="date" value="2026-09-15"></td><td><input type="number" value="0" style="width:60px"></td><td><button class="addrem rem" title="Remove">✕</button></td></tr>
+          </tbody></table>
+          <button class="addrem add" id="apAddMile">＋ Add milestone</button>
+          <table class="mini"><thead><tr><th>Meeting</th><th>Date</th><th>MoM attachment</th><th></th></tr></thead><tbody id="apMeets">
+            <tr><td><input value="Kick-off"></td><td><input type="date" value="2026-08-20"></td><td><button class="btn sm">📎 Attach / 📷 Camera</button></td><td><button class="addrem rem">✕</button></td></tr>
+          </tbody></table>
+          <button class="addrem add" id="apAddMeet">＋ Add meeting</button>
+          <div class="finlock">🔒 <b>Forecast commitment is Finance-only.</b> Save as Pipeline now; your Finance Lead (S. Iyer) vets and commits to Forecast.</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px">
+        <button class="btn pri" id="apSave">Save project → Pipeline</button>
+        <button class="btn" data-go="pj">Cancel</button>
+      </div>
+    </section>
+
+    <!-- ================= REPORTS ================= -->
+    <section class="pg" id="rep">
+      <div class="eyebrow">Stage 05 · Agent SCRIBE — SteerCo reporting</div>
+      <h1>Reports</h1>
+      <p class="sub">Standard reports by BU, Country, P&amp;L element and month, plus the custom query tool. Excel download of any view.</p>
+      <div class="grid2" style="margin-top:14px">
+        <div class="card"><h2>Savings by BU</h2><div class="pierow"><div class="pie" id="pieBU"></div><div class="pkeys" id="keyBU"></div></div></div>
+        <div class="card"><h2>Savings by Country</h2><div class="pierow"><div class="pie" id="pieCty"></div><div class="pkeys" id="keyCty"></div></div></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h2>By P&amp;L element</h2>
+        <table class="tb"><thead><tr><th>P&amp;L element</th><th style="text-align:right">Pipeline</th><th style="text-align:right">Forecast</th><th style="text-align:right">Committed</th><th style="text-align:right">Total</th></tr></thead><tbody id="pnlT"></tbody></table>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h2>Monthly phasing — Pipeline · Forecast · Committed</h2>
+        <div class="barwrap" id="repBar"></div>
+        <div class="legend" id="repLeg"></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px"><button class="btn">Custom query</button><button class="btn">⬇ Excel download</button><button class="btn">SteerCo pack (PDF)</button></div>
+    </section>
+
+    <!-- ================= AGENTS ================= -->
+    <section class="pg" id="agents">
+      <div class="eyebrow">The crew — COACH + specialists + Procura Crew</div>
+      <h1>Agent crew</h1>
+      <p class="sub">Each agent writes only to its own layer of the record. Grounding · Refusal · Human-in-the-loop — no side-effect with commercial consequence without a signed human acceptance. Click a card for consumes / produces / last activity.</p>
+      <div class="ag-grid" id="agGrid"></div>
+    </section>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+/* ============ currency ============ */
+const CUR={USD:{s:'$',r:1},EUR:{s:'€',r:0.92},GBP:{s:'£',r:0.79},AED:{s:'AED ',r:3.67},SAR:{s:'SAR ',r:3.75},INR:{s:'₹',r:83.2}};
+let cur='USD';
+const fK=k=>{const v=k*CUR[cur].r;return v>=1000?CUR[cur].s+(v/1000).toFixed(2)+'M':CUR[cur].s+Math.round(v)+'k';};
+const fM=k=>CUR[cur].s+(k*CUR[cur].r/1000).toFixed(1)+'M';
+const fU=n=>{const v=n*CUR[cur].r;return CUR[cur].s+(v>=100?Math.round(v):v.toFixed(2));};
+
+/* ============ login / nav ============ */
+document.getElementById('loginBtn').addEventListener('click',()=>{document.getElementById('login').style.display='none';});
+const CRUMBS={dash:"Dashboard",data:"Connectors & Data",cube:"Spend Tree",sc:"Should-Cost / ZBC",ffg:"Fuel for Growth",lev:"7 Levers & Sourcing",pj:"Projects",addpj:"Add Project",rep:"Reports",agents:"Agent Crew"};
+function goPage(id){
+  document.querySelectorAll('.snav button').forEach(x=>x.classList.toggle('on',x.dataset.p===id));
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('crumb').textContent=CRUMBS[id]||id;
+  document.querySelector('.content').scrollTop=0;
+}
+document.querySelectorAll('.snav button').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.p)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.go)));
+
+/* ============ PROCURA process definition ============ */
+const PSTAGES=[
+ {n:"Intake & scope",ag:"COACH → Crew",gate:true,d:"Project brief, category spec pack and the should-cost target hand off from Eye on Fat into the Procura event. Human gate: the category owner confirms scope, incumbent set and timeline."},
+ {n:"Market research",ag:"RESEARCHER",gate:false,d:"Supplier long-list with capability & risk notes, market structure, expected price band anchored to the should-cost, and switching-cost intelligence."},
+ {n:"RFP build",ag:"RFP ARCHITECT",gate:true,d:"Drafts the RFP with the evaluation matrix locked before distribution; should-cost target and spec tolerances embedded. Human gate: RFP sign-off — nothing is sent until you approve."},
+ {n:"Distribute & bids",ag:"BID HANDLER",gate:false,d:"Distributes to the approved shortlist, runs Q&A and clarifications with an equal-information rule, and logs bids as received — no peeking before the deadline."},
+ {n:"Evaluation",ag:"BID HANDLER → RECOMMENDER",gate:false,d:"Scores every bid against the locked matrix; builds a TCO model per bid; anomalies (e.g. sub-margin-floor pricing) escalate to SENTINEL."},
+ {n:"Recommendation",ag:"RECOMMENDER",gate:true,d:"Award recommendation with reasoning, sensitivity and negotiation levers. Human gate: the award decision is always yours — the Crew never awards."},
+ {n:"Award & handback",ag:"COACH",gate:true,d:"Award signed by the accountable manager; contract terms and realised savings write back into this Eye on Fat project; SCRIBE updates the Pipeline → Forecast → Committed funnel."}
+];
+const PROC_ELIG=p=>["Price","Specifications","Right Source"].includes(p.lever)||p.newSup;
+
+/* ============ projects data (000s USD) ============ */
+let PJ=[
+ {id:1,nm:"Shopping bag gauge & design optimisation",bu:"Retail",cty:"UAE",pl:"Packaging",lever:"Specifications",lead:"K. Menon",my:1,stg:"Committed",amt:175,prob:100,tadj:131,fin:"S. Iyer",start:"01-Jun-26",team:"K. Menon, P. Rao, supplier QA",newSup:false,procura:null,
+  desc:"Film gauge 32μ→27μ with reinforced top-fold on non-SM bags; supplier collaboration on tooling. Cleared Fuel-for-Growth as FAT.",
+  miles:[["Lab & drop test at 27μ","K. Menon","100%"],["Pilot 3 stores","P. Rao","100%"],["Tooling change 2 lines","Supplier","60%"],["Full rollout","K. Menon","0%"]],
+  meets:[["Kick-off · 12-May-26","MoM attached"],["Tooling review · 30-Jun-26","MoM attached"]]},
+ {id:2,nm:"Freight two-carrier Right-Source event",bu:"Corporate",cty:"USA",pl:"Logistics & freight",lever:"Right Source",lead:"A. D'Souza",my:0,stg:"Forecast",amt:140,prob:75,tadj:79,fin:"S. Iyer",start:"15-Aug-26",team:"A. D'Souza, logistics, finance",newSup:true,
+  procura:{stage:3,log:["G-Intake approved · Supply Chain Director · 02-Jul-26","RESEARCHER: 11 carriers long-listed; expected band $158–176/lane vs should-cost $171","RFP signed off & distributed to 6 carriers · 21-Jul-26","BID HANDLER: 4 of 6 bids received · clarification round open"]},
+  desc:"Rejected as BONE in single-carrier form (sub-margin-floor, single-lane dependence); redesigned as a two-carrier Right-Source event. Converted to a Procurement project — Procura Crew running, should-cost target $171/lane pre-loaded into the RFQ.",
+  miles:[["Procura event opened","A. D'Souza","100%"],["Bids in & evaluated","Crew","40%"],["Award & contract","Director","0%"]],
+  meets:[["Sourcing kick-off · 02-Jul-26","MoM attached"]]},
+ {id:3,nm:"Merchandiser smart rostering (redesigned)",bu:"Retail",cty:"UAE",pl:"Manpower services",lever:"Demand",lead:"K. Menon",my:1,stg:"Forecast",amt:113,prob:70,tadj:59,fin:"S. Iyer",start:"01-Oct-26",team:"K. Menon, Retail Ops",newSup:false,procura:null,
+  desc:"Original 25% hours cut held at Fuel-for-Growth as MUSCLE; redesigned as roster optimisation protecting peak-hour coverage.",
+  miles:[["Roster model built","Ops analyst","80%"],["2-store pilot","Store mgr","20%"]],meets:[["FFG redesign review · 15-Jul-26","MoM attached"]]},
+ {id:4,nm:"Corrugate & void-fill price renegotiation",bu:"E-commerce",cty:"India",pl:"Packaging",lever:"Price",lead:"P. Rao",my:0,stg:"Pipeline",amt:96,prob:60,tadj:36,fin:"S. Iyer",start:"01-Nov-26",team:"P. Rao, category team",newSup:false,procura:null,
+  desc:"Should-cost shows 14% gap to clean-sheet on corrugate; negotiation fact-base ready. Price lever — qualifies to convert to a Procurement project if negotiation stalls.",
+  miles:[["Clean-sheet signed (G2)","Analyst","100%"],["Negotiation round 1","P. Rao","0%"]],meets:[]},
+ {id:5,nm:"SaaS licence rationalisation",bu:"Corporate",cty:"UK",pl:"IT & telecom",lever:"Eliminate",lead:"J. Whitfield",my:0,stg:"Committed",amt:88,prob:100,tadj:81,fin:"S. Iyer",start:"01-May-26",team:"IT, Finance",newSup:false,procura:null,
+  desc:"ZBC challenge: 31% of seats inactive 90+ days across 14 tools. Eliminate & downgrade tiers.",
+  miles:[["Usage audit","IT","100%"],["Renegotiate top 5 renewals","IT","70%"]],meets:[["Renewal calendar review · 20-May-26","MoM attached"]]},
+ {id:6,nm:"AP invoice processing automation",bu:"Corporate",cty:"India",pl:"Manpower services",lever:"Automate (Digitise)",lead:"R. Nair",my:0,stg:"Forecast",amt:74,prob:80,tadj:39,fin:"S. Iyer",start:"01-Dec-26",team:"Finance shared services",newSup:false,procura:null,
+  desc:"OCR + 3-way match automation for 9k invoices/month; redeploy 4 FTE to analysis roles.",
+  miles:[["Vendor PoC","R. Nair","50%"]],meets:[]},
+ {id:7,nm:"Store fit-out supplier consolidation",bu:"Retail",cty:"KSA",pl:"Raw materials",lever:"Consolidate",lead:"S. AlHarbi",my:0,stg:"Pipeline",amt:132,prob:55,tadj:42,fin:"S. Iyer",start:"01-Jan-27",team:"Projects, procurement",newSup:true,procura:null,
+  desc:"11 fragmented fit-out vendors → 3 framework partners. Needs new suppliers — qualifies to convert into a Procurement project and launch the Procura Crew.",
+  miles:[["Baseline demand map","S. AlHarbi","30%"]],meets:[]},
+ {id:8,nm:"Utilities tariff & load optimisation",bu:"Hospitality",cty:"UAE",pl:"Rent & utilities",lever:"Price",lead:"M. Fernandes",my:0,stg:"Pipeline",amt:64,prob:65,tadj:21,fin:"S. Iyer",start:"01-Feb-27",team:"Engineering",newSup:false,procura:null,
+  desc:"Tariff re-banding + load shifting across 6 properties; benchmark shows 9% gap to look-alike hotels.",
+  miles:[["Interval-meter data pulled","Engineering","100%"]],meets:[]}
+];
+let nextId=9, showMy=false, openPj=null;
+
+/* ============ dashboard ============ */
+const MONTHS=["Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar"];
+const BAR=[[120,80,110],[160,120,140],[210,150,180],[260,190,220],[290,240,260],[310,300,300],
+ [330,360,340],[340,420,380],[350,470,420],[360,520,470],[370,560,520],[380,590,560]];
+function drawBar(el,leg){
+  const max=Math.max(...BAR.map(m=>m[0]+m[1]+m[2]));
+  el.innerHTML=BAR.map((m,i)=>{
+    const h=v=>Math.round(v/max*130), tot=m[0]+m[1]+m[2];
+    return `<div style="flex:1"><div class="mtot">${fM(tot)}</div><div class="mcol" style="height:130px">
+      <div class="mseg" style="background:var(--lean);height:${h(m[0])}px"></div>
+      <div class="mseg" style="background:var(--amber);height:${h(m[1])}px"></div>
+      <div class="mseg" style="background:var(--steel);height:${h(m[2])}px"></div>
+    </div><div class="mlab">${MONTHS[i]}</div></div>`;}).join('');
+  const tC=BAR.reduce((s,m)=>s+m[0],0),tF=BAR.reduce((s,m)=>s+m[1],0),tP=BAR.reduce((s,m)=>s+m[2],0);
+  leg.innerHTML=`<span><i style="background:var(--lean)"></i>Committed ${fM(tC)}</span>
+   <span><i style="background:var(--amber)"></i>Forecast ${fM(tF)}</span>
+   <span><i style="background:var(--steel)"></i>Pipeline ${fM(tP)}</span>
+   <span><b>FY total ${fM(tC+tF+tP)}</b></span>`;
+}
+function renderDash(){
+  const sum=s=>PJ.filter(p=>p.stg===s).reduce((a,p)=>a+p.amt,0);
+  document.getElementById('dashKpis').innerHTML=[
+    ['Pipeline',fK(sum('Pipeline')),''],['Forecast',fK(sum('Forecast')),''],
+    ['Committed',fK(sum('Committed')),'hot'],['Active projects',PJ.length,''],
+    ['Procura events',PJ.filter(p=>p.procura).length,''],['Addressed spend','63%','']
+  ].map(k=>`<div class="kpi ${k[2]}"><div class="v">${k[1]}</div><div class="l">${k[0]}</div></div>`).join('');
+  drawBar(document.getElementById('dashBar'),document.getElementById('dashLeg'));
+  document.getElementById('attn').innerHTML=[
+    ['⚑','Freight Procura event — 2 bids outstanding, clarification round closes Wed','amb'],
+    ['⚑','Fit-out consolidation needs new suppliers — convert to Procurement project to launch the Crew','proc'],
+    ['⚑','G0 completeness at 87% — KSA petty-cash feed unmapped','red']
+  ].map(r=>`<tr><td style="width:26px">${r[0]}</td><td>${r[1]}</td><td><span class="chip ${r[2]}">${r[2]==='proc'?'PROCURA':r[2]==='red'?'ACTION':'WATCH'}</span></td></tr>`).join('');
+  document.getElementById('dashProc').innerHTML=PJ.filter(p=>p.procura).map(p=>
+    `<tr><td>${p.nm}</td><td class="hint">${PSTAGES[p.procura.stage].n} · ${PSTAGES[p.procura.stage].ag}</td>
+     <td style="text-align:right"><button class="btn sm proc" data-openpj="${p.id}">Open</button></td></tr>`).join('')
+    ||'<tr><td class="hint">No projects converted yet — eligible projects show a Convert button in their detail.</td></tr>';
+  document.querySelectorAll('[data-openpj]').forEach(b=>b.addEventListener('click',()=>{goPage('pj');openDetail(+b.dataset.openpj);}));
+}
+
+/* ============ connectors ============ */
+const CONNS=[
+ ["SAP Business One","Synced 22 min ago","ok","GL + AP lines · 148k rows/mo · mapped to 8-level taxonomy"],
+ ["Tally Prime","Synced 1 hr ago","ok","India entities · voucher-level · auto GST split"],
+ ["Zoho Books","Synced 3 hr ago","ok","E-commerce BU · bills & expenses"],
+ ["QuickBooks Online","Synced daily","ok","UK entity · chart-of-accounts mapped 96%"],
+ ["Xero","Not connected","amb","Connect to pull AU pilot entity"],
+ ["Odoo","Synced 2 hr ago","ok","Manufacturing BOM & PO lines"],
+ ["NetSuite","Synced 40 min ago","ok","Corporate consolidations"],
+ ["Dynamics 365 BC","Sync error","red","Token expired — reauthorise to resume"],
+ ["Coupa / Ariba","Synced daily","ok","PO + catalogue prices for price-variance checks"],
+ ["Banking feeds","Synced 15 min ago","ok","Cash-out reconciliation vs AP"],
+ ["Email drop + OCR","Live","ok","invoices@meridian… · scans parsed by SCALE"]
+];
+let INTAKE=[
+ ["SAP B1 · July GL extract","148,204","Classified","98%"],
+ ["Tally · IN vouchers Q1","61,882","Classified","95%"],
+ ["scan_freight_inv_0722.pdf","1 (OCR)","Parsed by SCALE","100%"]
+];
+function renderConn(){
+  document.getElementById('connGrid').innerHTML=CONNS.map((c,i)=>`
+   <div class="conn" data-c="${i}" tabindex="0"><div class="nm">${c[0]}</div>
+     <div class="st"><span class="chip ${c[2]}">${c[1]}</span></div>
+     <div class="det">${c[3]}<br><button class="btn sm" style="margin-top:7px">Open field mapping</button></div></div>`).join('');
+  document.querySelectorAll('.conn').forEach(c=>{
+    const t=()=>c.classList.toggle('open');
+    c.addEventListener('click',t);
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'){t()}});
+  });
+  document.getElementById('intakeQ').innerHTML=INTAKE.map(r=>
+   `<tr><td>${r[0]}</td><td>${r[1]}</td><td><span class="chip ok">${r[2]}</span></td><td>${r[3]}</td></tr>`).join('');
+}
+document.getElementById('dz').addEventListener('click',()=>{
+  INTAKE.unshift(["upload_"+Math.floor(Math.random()*900+100)+".xlsx",(Math.floor(Math.random()*40)+5)+","+String(Math.floor(Math.random()*900)).padStart(3,'0'),"Parsing — SCALE","…"]);
+  renderConn();
+});
+
+/* ============ spend tree ============ */
+const TREE=[
+ {nm:"Raw materials",amt:18400,vol:62,flag:1,sup:[["Gulf Polymers",6200,"+3.1% price YoY vs resin index −1.8%",1],["Emirates Steel Trading",4100,"volume −4%, price flat",0],["Al Rams Chemicals",3600,"price +6.4% — no index justification",1],["Others (14)",4500,"fragmented tail",0]]},
+ {nm:"Packaging",amt:6100,vol:55,flag:1,sup:[["FlexiPack FZE",2900,"27μ vs look-alike 25μ — over-spec",1],["CorruBox India",1800,"14% gap to clean-sheet",1],["Others (6)",1400,"tail",0]]},
+ {nm:"Logistics & freight",amt:7900,vol:48,flag:1,sup:[["TransGulf Lines",3900,"single-lane dependence UAE–KSA",1],["SwiftHaul USA",2300,"rate −18% quote models 2.1% carrier margin — below floor",1],["Others (9)",1700,"spot buys 22%",0]]},
+ {nm:"Rent & utilities",amt:9800,vol:71,flag:0,sup:[["DEWA / SEWA",3100,"tariff band review due",1],["Landlords (12)",6700,"renewals FY27",0]]},
+ {nm:"Marketing",amt:4700,vol:40,flag:0,sup:[["MediaCo MENA",2100,"agency fee vs benchmark +2.1pp",1],["Others (11)",2600,"",0]]},
+ {nm:"IT & telecom",amt:3900,vol:52,flag:1,sup:[["SaaS portfolio (14)",2200,"31% seats inactive 90+ days",1],["Etisalat / du",1700,"contract renewal Q4",0]]},
+ {nm:"Travel & admin",amt:2300,vol:58,flag:0,sup:[["TMC + airlines",1600,"advance-purchase compliance 61%",1],["Office supplies",700,"catalogue leakage 8%",1]]},
+ {nm:"Manpower services",amt:5600,vol:66,flag:0,sup:[["StaffPro Gulf",3400,"merchandiser coverage — see FFG case",0],["Others (5)",2200,"",0]]}
+];
+function renderTree(){
+  const max=Math.max(...TREE.map(t=>t.amt));
+  document.getElementById('tmap').innerHTML=TREE.map((t,i)=>{
+    const w=Math.round(130+(t.amt/max)*230);
+    return `<div class="tnode" data-i="${i}" tabindex="0" style="width:${w}px">
+      ${t.flag?'<span class="tflag">⚑</span>':''}
+      <div class="nm">${t.nm}</div><div class="amt">${fK(t.amt)} / yr</div>
+      <div class="vp"><i style="width:${t.vol}%;background:var(--steel)"></i><i style="width:${100-t.vol}%;background:var(--fat)"></i></div>
+      <div class="hint" style="margin-top:4px">Vol ${t.vol}% × Price ${100-t.vol}%</div></div>`;}).join('');
+  document.querySelectorAll('.tnode').forEach(n=>{
+    n.addEventListener('click',()=>drill(+n.dataset.i));
+    n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();drill(+n.dataset.i)}});
+  });
+  drill(0);
+}
+function drill(i){
+  const t=TREE[i];
+  document.getElementById('drill').innerHTML=`
+   <h2>${t.nm} — supplier drill-down</h2>
+   <table class="tb"><thead><tr><th>Supplier</th><th style="text-align:right">Spend / yr</th><th>LENS insight</th><th></th></tr></thead><tbody>
+   ${t.sup.map(s=>`<tr><td>${s[0]}</td><td style="text-align:right;font-family:var(--mono)">${fK(s[1])}</td><td class="hint">${s[2]||'—'}</td>
+     <td>${s[3]?'<button class="btn sm">→ Opportunity</button>':''}</td></tr>`).join('')}
+   </tbody></table>
+   <div class="hint" style="margin-top:8px">Click any supplier row in the full product to open invoice-level lines with document lineage back to source.</div>`;
+}
+
+/* ============ should cost ============ */
+const STACK=[["Resin (HDPE, index-linked)",41.20],["Extrusion & conversion",14.60],["Printing (2-colour flexo)",6.10],["Cutting, sealing & top-fold",5.40],["Packing & palletisation",3.20],["Freight to DC",4.70],["Overheads (absorbed)",6.90],["Fair supplier margin (floor 8%)",6.60]];
+const SC_CURRENT=104.5; /* current price per 1,000 bags, USD */
+let stackVals=STACK.map(s=>s[1]);
+function renderSC(){
+  const tot=stackVals.reduce((a,b)=>a+b,0);
+  document.getElementById('scStack').innerHTML=STACK.map((s,i)=>`
+   <div class="stackrow"><span>${s[0]}</span>
+     <input type="number" step="0.1" value="${(stackVals[i]*CUR[cur].r).toFixed(2)}" data-sr="${i}">
+     <span class="pct">${(stackVals[i]/tot*100).toFixed(0)}%</span></div>`).join('');
+  document.getElementById('scTot').textContent=fU(tot);
+  document.getElementById('scCur').textContent=fU(SC_CURRENT);
+  document.getElementById('scGap').textContent=fU(SC_CURRENT-tot)+' ('+((SC_CURRENT-tot)/SC_CURRENT*100).toFixed(1)+'%)';
+  document.querySelectorAll('[data-sr]').forEach(inp=>inp.addEventListener('change',()=>{
+    stackVals[+inp.dataset.sr]=(+inp.value||0)/CUR[cur].r; renderSC();
+  }));
+  document.getElementById('scAgents').innerHTML=[
+   ["SCOPE","Cost structure locked — 8 elements per 1,000 bags; spec pack v3 attached.","ok","Done"],
+   ["PULSE","Resin priced off ICIS SE-Asia index (as-of 04-Aug-26); conversion rates from 3 regional converters.","ok","Done"],
+   ["FORGE","Formula-driven stack assembled; your edits preserved as analyst layer.","ok","Done"],
+   ["SENTINEL","2 checks amber — see benchmark table. Fair-margin floor holding at 8%.","amb","Review"]
+  ].map(a=>`<div class="agstat"><span class="nm">${a[0]}</span><p>${a[1]}</p><span class="chip ${a[2]}">${a[3]}</span></div>`).join('');
+  document.getElementById('sentT').innerHTML=[
+   ["Resin cost / kg","Model "+fU(1.06)+"","Index band "+fU(1.02)+"–"+fU(1.09),"ok"],
+   ["Conversion cost","Model "+fU(14.6),"Peer band "+fU(13.8)+"–"+fU(15.1),"ok"],
+   ["Film gauge","27μ","Look-alike runs 25μ","amb"],
+   ["Freight / 1,000","Model "+fU(4.7),"Lane benchmark "+fU(4.1),"amb"],
+   ["Supplier margin","8.0%","Floor 8.0%","ok"]
+  ].map(r=>`<tr><td>${r[0]}</td><td class="hint">${r[1]}</td><td class="hint">${r[2]}</td><td><span class="chip ${r[3]}">${r[3]==='ok'?'OK':'AMBER'}</span></td></tr>`).join('');
+}
+
+/* ============ fuel for growth ============ */
+const FFG=[
+ {nm:"Reduce HDPE film gauge 32μ → 27μ on all non-SM shopping bags",amtK:175,lever:"Specifications",cls:"FAT",clsC:"t-fat",
+  tests:[["Customer experience",92,"lean","Blind panel (n=120): no perceived difference in carry feel at 27μ with reinforced top-fold."],
+   ["Quality & spec",84,"lean","Drop & load tests passed at 27μ; failure rate 0.4% vs 0.5% baseline."],
+   ["Growth capacity",95,"lean","No capacity or capability removed; tooling change only."],
+   ["Supply continuity",88,"lean","Supplier margin unchanged; two qualified converters."],
+   ["Brand & compliance",90,"lean","Meets municipal bag regulations; recyclate share unchanged."]],
+  v:"FUEL FOR GROWTH: strategic look-alike runs 25μ with equal carry-capacity; lab test passed at 27μ with reinforced top-fold. Genuine over-spec — classified FAT. Recommend proceed with staged rollout & failure-rate monitoring.",
+  signers:"PM: K. Menon · Manager: Head of Retail Ops"},
+ {nm:"Cut in-store merchandiser hours by 25% across Hypermart UAE",amtK:300,lever:"Demand",cls:"MUSCLE",clsC:"t-mus",
+  tests:[["Customer experience",38,"fat","Shelf-availability correlates with coverage (r=0.71 from POS data); OOS drives switch behaviour."],
+   ["Quality & spec",70,"amber","Planogram compliance dips 9pp in low-coverage pilots."],
+   ["Growth capacity",31,"fat","Q4 growth plan adds 2 stores that depend on this coverage."],
+   ["Supply continuity",90,"lean","No supplier impact."],
+   ["Brand & compliance",85,"lean","No regulatory exposure."]],
+  v:"FUEL FOR GROWTH: this cuts muscle, not fat. Recommend HOLD — redesign as roster optimisation (smart scheduling) that protects peak-hour coverage: est. $113k with no availability impact.",
+  signers:"PM: K. Menon · Manager: Head of Retail Ops"},
+ {nm:"Consolidate freight to single line-haul provider at −18% rate",amtK:225,lever:"Consolidate",cls:"BONE",clsC:"t-bone",
+  tests:[["Customer experience",75,"amber","OTIF risk if the single carrier fails on the UAE–KSA lane."],
+   ["Quality & spec",80,"lean","Service spec unchanged on paper."],
+   ["Growth capacity",66,"amber","Growth plan depends on the very lane being concentrated."],
+   ["Supply continuity",22,"fat","−18% quote models the carrier at 2.1% net margin — below the fair-margin floor; single-carrier dependence."],
+   ["Brand & compliance",82,"lean","No exposure."]],
+  v:"FUEL FOR GROWTH + SENTINEL: the −18% quote models the carrier below the fair-margin floor and creates single-carrier dependence on the lane your growth depends on. This is bone. Recommend REJECT as-is; re-route via the project's Procura conversion as a two-carrier Right-Source event with should-cost target loaded.",
+  signers:"PM: A. D'Souza · Manager: Supply Chain Director"}
+];
+function renderFFG(){
+ document.getElementById('ffgList').innerHTML=FFG.map((f,i)=>`
+  <div class="ffg-item">
+   <div class="ffg-h"><span class="cls ${f.clsC}">${f.cls}</span><span class="nm">${f.nm}</span><span class="amt">${fK(f.amtK)} / yr · Lever: ${f.lever}</span></div>
+   <div class="tests">${f.tests.map((t,j)=>{
+     const col=t[2]==='lean'?'var(--lean)':t[2]==='amber'?'var(--amber)':'var(--fat)';
+     return `<div class="test" tabindex="0"><div class="tl">${t[0]}</div><div class="tbarr"><i style="width:${t[1]}%;background:${col}"></i></div><div class="ts2" style="color:${col}">${t[1]}/100 · click for evidence</div><div class="ev">${t[3]}</div></div>`;}).join('')}
+   </div>
+   <div class="ffg-verdict">${f.v}</div>
+   <div class="decide" data-i="${i}">
+     <button class="db go">Proceed</button><button class="db hold">Hold — redesign</button><button class="db stop">Reject</button>
+     <span class="signers">Dual-sign required · ${f.signers}</span>
+   </div>
+  </div>`).join('');
+ document.querySelectorAll('.test').forEach(t=>{
+   const tog=()=>t.classList.toggle('open');
+   t.addEventListener('click',tog);
+   t.addEventListener('keydown',e=>{if(e.key==='Enter'){tog()}});
+ });
+ document.querySelectorAll('.decide').forEach(d=>{
+  d.querySelectorAll('.db').forEach(b=>b.addEventListener('click',()=>{
+    d.querySelectorAll('.db').forEach(x=>x.classList.remove('picked'));
+    b.classList.add('picked');
+    let s=d.querySelector('.signed');
+    if(!s){s=document.createElement('span');s.className='signed';d.insertBefore(s,d.querySelector('.signers'))}
+    s.textContent=`✔ ${b.textContent} — dual-signed to audit log · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+  }));
+ });
+}
+
+/* ============ levers ============ */
+const LEVERS=[
+ {cls:"mult",k:"Multiplicative · what the cost is",nm:"Price",p:"Pay the right price for what you already buy. Transparency beats negotiation theatre. Stalled negotiations convert into a Procura event from within the project.",
+  tools:["Tender / auction","Should-cost analysis (SCOPE→SENTINEL)","Volume & bundle deals","Alternate vendor development","Index-linked pricing"]},
+ {cls:"mult",k:"Multiplicative · what the cost is",nm:"Specifications",p:"Buy fit-for-purpose, not gold-plated. Design and material re-engineering is where 10–20% often hides. Spec-change resourcing can convert into a Procura event.",
+  tools:["Standardise variants","Fit-for-purpose review","Innovate with supplier / upstream","Design optimisation (gusset & orientation redesign)","Material substitution (LDPE→HDPE)"]},
+ {cls:"mult",k:"Multiplicative · what the cost is",nm:"Demand",p:"Consume less of it. Volume is a choice, not a given — the zero-based question lives here.",
+  tools:["Demand policies & budgets","Reduce / reuse consumption","Inventory reduction & JIT","Collaborate with business owners"]},
+ {cls:"add",k:"Additive · how you operate",nm:"Eliminate",p:"The cheapest spend is the one that stops. ZBC challenges every line to justify its existence.",
+  tools:["Zero-based challenge","Stop / sunset list","Policy elimination","Duplicate-service removal"]},
+ {cls:"add",k:"Additive · how you operate",nm:"Automate (Digitise)",p:"Take the manual touch out — digitise the workflow and redeploy the effort.",
+  tools:["OCR & workflow automation","Self-service portals","RPA on repetitive steps","E-invoicing"]},
+ {cls:"add",k:"Additive · how you operate",nm:"Consolidate",p:"Fewer, deeper supplier relationships; bundle demand across BUs & geographies — without breaching the fair-margin floor.",
+  tools:["Vendor consolidation","Cross-BU demand bundling","Framework agreements","Catalogue rationalisation"]},
+ {cls:"add",k:"Additive · how you operate",nm:"Right Source",p:"The right supplier, geography and contract model. Hands off to the Procura Crew end-to-end — you keep the award decision.",
+  tools:["Procura sourcing event","Make vs buy","Local ↔ regional ↔ global","Contract-model redesign"]}
+];
+function renderLev(){
+ document.getElementById('lvGrid').innerHTML=LEVERS.map((l,i)=>{
+  const linked=PJ.filter(p=>p.lever===l.nm||(l.nm==="Automate (Digitise)"&&p.lever.startsWith("Automate")));
+  const sum=linked.reduce((a,p)=>a+p.amt,0);
+  return `<div class="lv ${l.cls}" data-l="${i}" tabindex="0">
+   <div class="k">Lever ${i+1} · ${l.k}</div><h3>${l.nm}</h3><p>${l.p}</p>
+   <div class="stats">${linked.length} project${linked.length===1?'':'s'} · ${fK(sum)} / yr</div>
+   <div class="lpj">
+     <ul style="font-size:12px;color:var(--steel);padding-left:16px">${l.tools.map(t=>`<li>${t}</li>`).join('')}</ul>
+     <div style="margin-top:8px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--steel)">Linked projects</div>
+     ${linked.map(p=>`<a href="#" data-jump="${p.id}">→ ${p.nm} · ${fK(p.amt)}${p.procura?' · <span class="chip proc">PROCURA</span>':''}</a>`).join('')||'<span class="hint">No linked projects yet</span>'}
+   </div></div>`;}).join('');
+ document.querySelectorAll('.lv').forEach(c=>{
+   c.addEventListener('click',e=>{if(e.target.dataset.jump)return;c.classList.toggle('open')});
+   c.addEventListener('keydown',e=>{if(e.key==='Enter'){c.classList.toggle('open')}});
+ });
+ document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',e=>{
+   e.preventDefault();goPage('pj');openDetail(+a.dataset.jump);
+ }));
+}
+
+/* ============ projects ============ */
+function fills(){
+  const uni=(k)=>[...new Set(PJ.map(p=>p[k]))];
+  const put=(id,arr)=>{const s=document.getElementById(id);const cur=s.value;
+    s.innerHTML=`<option value="">${s.options[0].text.split(':')[0]}: All</option>`+arr.map(v=>`<option>${v}</option>`).join('');s.value=cur;};
+  put('fBU',uni('bu'));put('fCty',uni('cty'));put('fPnl',uni('pl'));put('fLever',uni('lever'));
+}
+function renderPJ(){
+  fills();
+  const f=id=>document.getElementById(id).value;
+  const rows=PJ.filter(p=>(!showMy||p.my)&&(!f('fBU')||p.bu===f('fBU'))&&(!f('fCty')||p.cty===f('fCty'))
+    &&(!f('fPnl')||p.pl===f('fPnl'))&&(!f('fStage')||p.stg===f('fStage'))&&(!f('fLever')||p.lever===f('fLever')));
+  document.getElementById('pjBody').innerHTML=rows.map(p=>`
+   <tr><td><a href="#" data-det="${p.id}" style="color:var(--ink);font-weight:600">${p.nm}</a>
+     ${p.procura?' <span class="chip proc">PROCURA</span>':PROC_ELIG(p)?' <span class="chip" title="Qualifies to convert to a Procurement project">⇢ eligible</span>':''}</td>
+   <td>${p.bu}</td><td>${p.cty}</td><td>${p.pl}</td><td>${p.lever}</td><td>${p.lead}</td>
+   <td><span class="stgpill stg-${p.stg[0]}">${p.stg}</span></td>
+   <td style="text-align:right;font-family:var(--mono)">${fK(p.amt)}</td>
+   <td style="text-align:right;font-family:var(--mono)">${fK(p.tadj)}</td>
+   <td><button class="btn sm" data-dup="${p.id}" title="Duplicate — steal with pride">⧉</button></td></tr>`).join('');
+  const tot=s=>rows.filter(p=>p.stg===s).reduce((a,p)=>a+p.tadj,0);
+  document.getElementById('pjSum').innerHTML=
+   `<span>${rows.length} projects</span><span>Pipeline (T&P) ${fK(tot('Pipeline'))}</span>
+    <span>Forecast (T&P) ${fK(tot('Forecast'))}</span><span>Committed (T&P) ${fK(tot('Committed'))}</span>`;
+  document.querySelectorAll('[data-det]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();openDetail(+a.dataset.det)}));
+  document.querySelectorAll('[data-dup]').forEach(b=>b.addEventListener('click',()=>{
+    const src=PJ.find(p=>p.id===+b.dataset.dup);
+    const cp=JSON.parse(JSON.stringify(src));cp.id=nextId++;cp.nm=src.nm+" (copy)";cp.stg="Pipeline";cp.procura=null;cp.my=1;
+    PJ.unshift(cp);renderAll();openDetail(cp.id);
+  }));
+  if(openPj&&!PJ.find(p=>p.id===openPj))openPj=null;
+  if(openPj)openDetail(openPj,true);else document.getElementById('pdetail').innerHTML='';
+}
+['fBU','fCty','fPnl','fStage','fLever'].forEach(id=>document.getElementById(id).addEventListener('change',renderPJ));
+document.getElementById('myBtn').addEventListener('click',()=>{showMy=true;document.getElementById('myBtn').classList.add('on');document.getElementById('allBtn').classList.remove('on');renderPJ();});
+document.getElementById('allBtn').addEventListener('click',()=>{showMy=false;document.getElementById('allBtn').classList.add('on');document.getElementById('myBtn').classList.remove('on');renderPJ();});
+document.getElementById('myBtn').classList.remove('on');document.getElementById('allBtn').classList.add('on');
+
+function procuraPanel(p){
+  if(!p.procura){
+    if(!PROC_ELIG(p))return '';
+    const why=p.newSup?'it needs a new supplier':`it takes the <b>${p.lever}</b> lever`;
+    return `<div class="procura-box">
+      <h3>⇢ Convert to Procurement project</h3>
+      <p>This project qualifies because ${why}. Converting launches the full Procura process inside this project — COACH hands the brief and the should-cost target to the Procura Crew (<b>Researcher · RFP Architect · Bid Handler · Recommender</b>), who run research → RFP → bids → evaluation → recommendation. Every commercially consequential step waits for your signature; the award decision is always yours.</p>
+      <div style="margin-top:10px"><button class="btn proc pri" data-conv="${p.id}">Convert &amp; launch Procura Crew</button></div>
+    </div>`;
+  }
+  const st=p.procura.stage;
+  return `<div class="procura-box">
+    <h3>Procura procurement event — live</h3>
+    <p>Should-cost target pre-loaded from Stage 02. Current stage: <b>${PSTAGES[st].n}</b> · ${PSTAGES[st].ag}</p>
+    <div class="psteps">${PSTAGES.map((s,i)=>`
+      <div class="pstep ${i<st?'done':i===st?'now':''}" data-ps="${i}" data-pid="${p.id}">
+        <div class="dot">${i<st?'✓':i+1}</div><div class="pl">${s.n}${s.gate?' ◆':''}</div>
+      </div>`).join('')}</div>
+    <div class="pstage-det" id="psDet-${p.id}">
+      <span class="ag">${PSTAGES[st].ag}${PSTAGES[st].gate?' · human gate ◆':''}</span>
+      <p style="margin-top:4px">${PSTAGES[st].d}</p>
+      ${st<PSTAGES.length-1
+        ?`<button class="btn sm proc pri" style="margin-top:9px" data-adv="${p.id}">${PSTAGES[st].gate?'Approve gate & advance':'Advance stage (simulate)'}</button>`
+        :`<span class="chip ok" style="margin-top:9px;display:inline-block">Event complete — savings written back to this project</span>`}
+    </div>
+    <div class="plog">${p.procura.log.map(l=>`<div>› ${l}</div>`).join('')}</div>
+  </div>`;
+}
+function openDetail(id,quiet){
+  openPj=id;
+  const p=PJ.find(x=>x.id===id);if(!p)return;
+  document.getElementById('pdetail').innerHTML=`
+   <div class="card">
+    <div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">
+      <h2 style="margin:0">${p.nm}</h2>
+      <span class="stgpill stg-${p.stg[0]}">${p.stg}</span>
+      ${p.procura?'<span class="chip proc">PROCURA</span>':''}
+      <span class="hint" style="margin-left:auto">Lead ${p.lead} · Finance ${p.fin} · Savings start ${p.start}</span>
+    </div>
+    <div class="acc open"><button data-acc>1 · Details <span>▾</span></button><div class="bd">
+      <p style="margin-top:10px;font-size:13px">${p.desc}</p>
+      <div class="hint" style="margin-top:6px">BU ${p.bu} · Country ${p.cty} · P&amp;L ${p.pl} · Lever ${p.lever} · Team: ${p.team}${p.newSup?' · Requires new supplier':''}</div>
+      ${procuraPanel(p)}
+    </div></div>
+    <div class="acc"><button data-acc>2 · Savings <span>▾</span></button><div class="bd">
+      <div class="pj-sum" style="margin-top:10px">
+        <span>Annual ${fK(p.amt)}</span><span>Probability ${p.prob}%</span>
+        <span>Time & probability adjusted ${fK(p.tadj)}</span>
+        <span>Carry-forward ${fK(Math.max(0,p.amt-p.tadj))}</span></div>
+      <div class="finlock">🔒 Only Finance (${p.fin}) can commit this project to Forecast.
+        ${p.stg==='Pipeline'?`<button class="btn sm" style="margin-left:8px" data-commit="${p.id}">Commit to Forecast (as ${p.fin})</button>`:''}</div>
+    </div></div>
+    <div class="acc"><button data-acc>3 · Cost to achieve <span>▾</span></button><div class="bd">
+      <p class="hint" style="margin-top:10px">One-time ${fK(0)} · Recurring ${fK(0)} — edit in the full product.</p></div></div>
+    <div class="acc"><button data-acc>4 · Milestones & meetings <span>▾</span></button><div class="bd">
+      <table class="mini"><thead><tr><th>Milestone</th><th>Owner</th><th>%</th></tr></thead><tbody>
+      ${p.miles.map(m=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td></tr>`).join('')}</tbody></table>
+      <table class="mini"><thead><tr><th>Meeting</th><th>MoM</th></tr></thead><tbody>
+      ${p.meets.map(m=>`<tr><td>${m[0]}</td><td class="hint">${m[1]}</td></tr>`).join('')||'<tr><td class="hint">No meetings yet</td><td></td></tr>'}</tbody></table>
+    </div></div>
+   </div>`;
+  wireAcc();
+  const cv=document.querySelector('[data-conv]');
+  if(cv)cv.addEventListener('click',()=>{
+    p.procura={stage:0,log:[`Converted to Procurement project · ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'})} · brief + should-cost target handed to Procura Crew`]};
+    renderAll();openDetail(p.id);
+  });
+  const av=document.querySelector('[data-adv]');
+  if(av)av.addEventListener('click',()=>{
+    const s=PSTAGES[p.procura.stage];
+    p.procura.log.push(`${s.gate?'◆ Gate approved · ':''}${s.n} complete (${s.ag}) · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`);
+    p.procura.stage++;renderAll();openDetail(p.id);
+  });
+  const cm=document.querySelector('[data-commit]');
+  if(cm)cm.addEventListener('click',()=>{p.stg='Forecast';renderAll();openDetail(p.id);});
+  if(!quiet&&document.getElementById('pdetail').scrollIntoView)document.getElementById('pdetail').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function wireAcc(){
+  document.querySelectorAll('[data-acc]').forEach(b=>{
+    if(b.dataset.wired)return;b.dataset.wired=1;
+    b.addEventListener('click',()=>b.parentElement.classList.toggle('open'));
+  });
+}
+
+/* ============ add project ============ */
+function apRecalc(){
+  const amt=+document.getElementById('apAmt').value||0, prob=+document.getElementById('apProb').value||0;
+  const d=new Date(document.getElementById('apStart').value||'2026-10-01');
+  let m=(d.getMonth()>=3?d.getMonth()-3:d.getMonth()+9); /* months into FY Apr–Mar */
+  const rem=12-m, fy=Math.round(amt*rem/12*prob/100), cf=Math.round(amt*prob/100)-fy;
+  document.getElementById('apFY').value=fy+' (base $000s)';
+  document.getElementById('apCF').value=Math.max(0,cf)+' (base $000s)';
+}
+['apAmt','apProb','apStart'].forEach(id=>document.getElementById(id).addEventListener('input',apRecalc));
+function apElig(){
+  const lv=document.getElementById('apLever').value, ns=document.getElementById('apNewSup').value==='Yes';
+  document.getElementById('apElig').style.display=(['Price','Specifications','Right Source'].includes(lv)||ns)?'block':'none';
+}
+['apLever','apNewSup'].forEach(id=>document.getElementById(id).addEventListener('change',apElig));
+document.getElementById('apAddMile').addEventListener('click',()=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML='<td><input></td><td><input></td><td><input type="date"></td><td><input type="number" value="0" style="width:60px"></td><td><button class="addrem rem">✕</button></td>';
+  document.getElementById('apMiles').appendChild(tr);
+});
+document.getElementById('apAddMeet').addEventListener('click',()=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML='<td><input></td><td><input type="date"></td><td><button class="btn sm">📎 Attach / 📷 Camera</button></td><td><button class="addrem rem">✕</button></td>';
+  document.getElementById('apMeets').appendChild(tr);
+});
+document.addEventListener('click',e=>{if(e.target.classList.contains('rem'))e.target.closest('tr').remove();});
+document.getElementById('apSave').addEventListener('click',()=>{
+  const nm=document.getElementById('apName').value.trim()||'Untitled project';
+  const amt=+document.getElementById('apAmt').value||0, prob=+document.getElementById('apProb').value||0;
+  const fy=parseInt(document.getElementById('apFY').value)||Math.round(amt*prob/100);
+  PJ.unshift({id:nextId++,nm,bu:document.getElementById('apBU').value,cty:document.getElementById('apCty').value,
+    pl:document.getElementById('apPnl').value,lever:document.getElementById('apLever').value,
+    lead:'K. Menon',my:1,stg:'Pipeline',amt,prob,tadj:fy,fin:'S. Iyer',
+    start:document.getElementById('apStart').value,team:'—',
+    newSup:document.getElementById('apNewSup').value==='Yes',procura:null,
+    desc:'Idea saved to Pipeline — commit to Forecast via Finance.',miles:[],meets:[]});
+  renderAll();goPage('pj');openDetail(PJ[0].id);
+});
+apRecalc();apElig();
+
+/* ============ reports ============ */
+const PCOL=['#E4572E','#1E8A5A','#D9930D','#5A6B66','#2F5D8A','#7A6A55'];
+function pie(elId,keyId,pairs){
+  const tot=pairs.reduce((a,p)=>a+p[1],0);let acc=0;
+  const stops=pairs.map((p,i)=>{const a0=acc/tot*360;acc+=p[1];const a1=acc/tot*360;
+    return `${PCOL[i%6]} ${a0}deg ${a1}deg`;}).join(',');
+  document.getElementById(elId).style.background=`conic-gradient(${stops})`;
+  document.getElementById(keyId).innerHTML=pairs.map((p,i)=>
+   `<div><i style="background:${PCOL[i%6]}"></i>${p[0]} · ${fK(p[1])} (${(p[1]/tot*100).toFixed(0)}%)</div>`).join('');
+}
+function renderRep(){
+  const by=k=>{const m={};PJ.forEach(p=>m[p[k]]=(m[p[k]]||0)+p.amt);return Object.entries(m).sort((a,b)=>b[1]-a[1]);};
+  pie('pieBU','keyBU',by('bu'));pie('pieCty','keyCty',by('cty'));
+  const pl={};PJ.forEach(p=>{pl[p.pl]=pl[p.pl]||{P:0,F:0,C:0};pl[p.pl][p.stg[0]]+=p.amt;});
+  document.getElementById('pnlT').innerHTML=Object.entries(pl).map(([k,v])=>
+   `<tr><td>${k}</td><td style="text-align:right;font-family:var(--mono)">${fK(v.P)}</td>
+    <td style="text-align:right;font-family:var(--mono)">${fK(v.F)}</td>
+    <td style="text-align:right;font-family:var(--mono)">${fK(v.C)}</td>
+    <td style="text-align:right;font-family:var(--mono)"><b>${fK(v.P+v.F+v.C)}</b></td></tr>`).join('');
+  drawBar(document.getElementById('repBar'),document.getElementById('repLeg'));
+}
+
+/* ============ agents ============ */
+const AGENTS=[
+ {o:1,role:"Orchestrator",nm:"COACH",p:"Runs the whole value stream: sequences the crew, enforces every human gate, opens Procura events when a project converts, and loops the stream back to Stage 00 on fresh data.",
+  io:"<b>Consumes</b> gate outcomes & programme state · <b>Produces</b> stage hand-offs, Procura event briefs, audit trail",act:"Opened Procura event for freight two-carrier project"},
+ {fam:"eof",ft:"Stage 00",role:"Data wrangler",nm:"SCALE",p:"Ingests ERP/accounting feeds and uploads; deduplicates, classifies to the taxonomy and reconciles to the trial balance.",
+  io:"<b>Consumes</b> raw GL/AP/PO feeds, scans (OCR) · <b>Produces</b> the clean spend base for G0",act:"Parsed scan_freight_inv_0722.pdf · 22 min ago"},
+ {fam:"eof",ft:"Stage 01",role:"Cube builder",nm:"CUBE",p:"Builds the Volume × Price spend cube with drill-down by category, supplier, invoice, department, brand, BU and geography.",
+  io:"<b>Consumes</b> the clean spend base · <b>Produces</b> the drillable spend tree",act:"Rebuilt cube on July close · 2 hr ago"},
+ {fam:"eof",ft:"Stage 01",role:"Insight hunter",nm:"LENS",p:"Surfaces anomalies, price-variance and demand outliers; ranks opportunities by spend × volatility × savings potential.",
+  io:"<b>Consumes</b> the cube · <b>Produces</b> the ranked opportunity shortlist for G1",act:"Flagged Al Rams Chemicals +6.4% vs index"},
+ {fam:"eof",ft:"Stage 02",role:"Cost architect",nm:"SCOPE",p:"Asks the zero-based question first, then structures the clean-sheet: what the cost is made of, element by element.",
+  io:"<b>Consumes</b> spec packs & shortlist · <b>Produces</b> the cost structure",act:"Locked 8-element bag structure v3"},
+ {fam:"eof",ft:"Stage 02",role:"Market analyst",nm:"PULSE",p:"Prices each element off indices and market quotes with as-of dates — directionally right beats falsely precise.",
+  io:"<b>Consumes</b> indices, quotes, rate cards · <b>Produces</b> priced inputs with provenance",act:"Resin repriced off ICIS 04-Aug-26"},
+ {fam:"eof",ft:"Stage 02",role:"Model builder",nm:"FORGE",p:"Assembles the formula-driven cost stack; analyst edits are preserved as their own layer and never overwritten.",
+  io:"<b>Consumes</b> SCOPE structure + PULSE rates · <b>Produces</b> the editable should-cost stack",act:"Stack recomputed after analyst edit"},
+ {fam:"eof",ft:"Stages 02–03",role:"Guardrail & benchmarker",nm:"SENTINEL",p:"Benchmarks against strategic look-alikes, industry look-alikes and internal peers; enforces the fair-margin floor — sub-floor 'savings' are supply risk, not wins.",
+  io:"<b>Consumes</b> stacks + benchmark libraries · <b>Produces</b> ok/amber/red checks & gap-to-benchmark tables",act:"Flagged −18% freight quote below floor"},
+ {fam:"eof",ft:"Stage 03 · Gate G3",role:"Growth guardian",nm:"FUEL FOR GROWTH",p:"Runs the Fuel-for-Growth gate: five evidence-based tests (customer, quality, growth, supply, brand) to classify every idea FAT, MUSCLE or BONE — and proposes redesigns that keep the saving without cutting muscle. Testifies only; the PM and business Manager dual-sign the decision.",
+  io:"<b>Consumes</b> savings ideas + POS/ops/supplier evidence · <b>Produces</b> classifications, redesign proposals, G3 evidence packs",act:"Redesigned merchandiser cut into smart rostering"},
+ {fam:"eof",ft:"Stage 04",role:"Strategist",nm:"LEVER",p:"Maps every cleared gap to one of the seven levers, applies the EyeonFat sourcing model, sizes ideas with calculators and drafts the negotiation talk-track or business case.",
+  io:"<b>Consumes</b> bridges + gaps + sourcing assessment · <b>Produces</b> the sized savings-idea backlog",act:"Sized utilities tariff idea at $64k"},
+ {fam:"eof",ft:"Stage 05",role:"Programme manager",nm:"PILOT",p:"Turns committed ideas into projects with owners, milestones and blocker escalation across teams, brands, BUs and geographies.",
+  io:"<b>Consumes</b> the committed pipeline · <b>Produces</b> live project boards and blocker alerts",act:"Escalated tooling delay on bag project"},
+ {fam:"eof",ft:"Stage 05",role:"Reporter",nm:"SCRIBE",p:"Maintains the Pipeline → Forecast → Committed funnel, month-wise phasing, BU/Country and P&L-element splits, and the steal-with-pride playbook library.",
+  io:"<b>Consumes</b> project status + finance actuals · <b>Produces</b> SteerCo reporting and playbooks",act:"July SteerCo pack generated"},
+ {fam:"pc",ft:"Procura Crew",role:"Market intelligence",nm:"RESEARCHER",p:"Builds the supplier long-list, market structure and expected price band — anchored to the should-cost target handed over from the project.",
+  io:"<b>Consumes</b> project brief + should-cost target · <b>Produces</b> long-list & price-band intel",act:"11 carriers long-listed for freight event"},
+ {fam:"pc",ft:"Procura Crew",role:"RFP designer",nm:"RFP ARCHITECT",p:"Drafts the RFP with the evaluation matrix locked before distribution; nothing is sent without human sign-off.",
+  io:"<b>Consumes</b> long-list + spec pack · <b>Produces</b> the signed-off RFP",act:"Freight RFP distributed 21-Jul-26"},
+ {fam:"pc",ft:"Procura Crew",role:"Bid manager",nm:"BID HANDLER",p:"Distributes, runs Q&A with an equal-information rule, logs bids sealed until deadline, then scores against the locked matrix.",
+  io:"<b>Consumes</b> the RFP + bids · <b>Produces</b> scored bid comparisons & TCO models",act:"4 of 6 freight bids received"},
+ {fam:"pc",ft:"Procura Crew",role:"Award adviser",nm:"RECOMMENDER",p:"Builds the award recommendation with reasoning, sensitivity and negotiation levers — the Crew never awards; you do.",
+  io:"<b>Consumes</b> evaluation output · <b>Produces</b> the recommendation for the human award gate",act:"Awaiting full bid set"}
+];
+function renderAgents(){
+  document.getElementById('agGrid').innerHTML=AGENTS.map(a=>`
+   <div class="ag ${a.o?'orchc':''}" tabindex="0">${a.o?'':`<span class="fam ${a.fam}">${a.ft}</span>`}
+     <div class="role">${a.role}</div><div class="nm">${a.nm}</div><p>${a.p}</p>
+     <div class="io">${a.io}<br><span class="hint">Last activity: ${a.act}</span></div></div>`).join('');
+  document.querySelectorAll('.ag').forEach(c=>{
+    c.addEventListener('click',()=>c.classList.toggle('open'));
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'){c.classList.toggle('open')}});
+  });
+}
+
+/* ============ render all / currency ============ */
+function renderAll(){renderDash();renderConn();renderTree();renderSC();renderFFG();renderLev();renderPJ();renderRep();renderAgents();wireAcc();}
+document.getElementById('curSel').addEventListener('change',e=>{cur=e.target.value;renderAll();});
+renderAll();
+</script>
+</body>
+</html>

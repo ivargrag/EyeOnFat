@@ -1,0 +1,53 @@
+# Eye on Fat — full local dev: `docker compose up` boots DB → migrations+seed → API → Web.
+# Web: http://localhost:3000 · API: http://localhost:4000 · demo login in README.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: eof_owner
+      POSTGRES_PASSWORD: eof_owner_pw
+      POSTGRES_DB: eyeonfat
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eof_owner -d eyeonfat"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    build: { context: ., dockerfile: infra/api.Dockerfile }
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DATABASE_ADMIN_URL: postgres://eof_owner:eof_owner_pw@db:5432/eyeonfat
+    command: sh -c "node db/dist/migrate.js && node db/dist/seed.js"
+    restart: "no"
+
+  api:
+    build: { context: ., dockerfile: infra/api.Dockerfile }
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    environment:
+      NODE_ENV: production
+      API_PORT: 4000
+      WEB_ORIGIN: http://localhost:3000
+      DATABASE_URL: postgres://eof_app:eof_app_pw@db:5432/eyeonfat
+      DATABASE_ADMIN_URL: postgres://eof_owner:eof_owner_pw@db:5432/eyeonfat
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-only-access-secret-change-me-now!}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-only-refresh-secret-change-me-now}
+      MODEL_DEFAULT: ${MODEL_DEFAULT:-demo-engine}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      FX_SOURCE: ${FX_SOURCE:-seed}
+    ports: ["4000:4000"]
+
+  web:
+    build: { context: ., dockerfile: infra/web.Dockerfile }
+    depends_on: [api]
+    environment:
+      API_PROXY_TARGET: http://api:4000
+    ports: ["3000:3000"]
+
+volumes:
+  pgdata:

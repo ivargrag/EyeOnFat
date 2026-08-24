@@ -1,0 +1,42 @@
+{
+  "name": "@eof/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "gen:openapi": "tsx src/gen-openapi.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@eof/agents": "workspace:*",
+    "@eof/db": "workspace:*",
+    "@eof/domain": "workspace:*",
+    "@eof/model-gw": "workspace:*",
+    "@fastify/cookie": "^11.1.2",
+    "@fastify/cors": "^11.3.0",
+    "@fastify/multipart": "^10.1.1",
+    "@fastify/rate-limit": "^11.2.0",
+    "bcryptjs": "^2.4.3",
+    "csv-parse": "^5.6.0",
+    "exceljs": "^4.4.0",
+    "fastify": "^5.12.1",
+    "jose": "^5.9.6",
+    "otplib": "^12.0.1",
+    "pg": "^8.13.1",
+    "pg-boss": "^10.1.5",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.9.0",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

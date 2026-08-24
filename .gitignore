@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.next/
+.turbo/
+.vercel/
+.pnpm-store/
+coverage/
+*.log
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+openapi.json
+playwright-report/
+test-results/
+.DS_Store

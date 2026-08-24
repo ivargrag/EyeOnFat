@@ -1,0 +1,20 @@
+{
+  "name": "@eof/integrations",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sit-on-the-side surfaces (P4): Teams bot, Slack app, webhook dispatcher, PM-tool adapters. v1 ships typed adapter scaffolds; wiring requires app registrations (see README).",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@eof/domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
